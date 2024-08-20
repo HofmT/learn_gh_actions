@@ -58,7 +58,7 @@ jobs:
 
       - name: Check PostgreSQL service
         run: |
-          pg_isready -h localhost -p 5432 -U plural
+          dockerize -wait tcp://localhost:5432 -timeout 1m
       - name: Check Neo4j service
         run: |
           curl -s -o /dev/null -w "%{http_code}" http://localhost:7484 || echo "Neo4j is not running"
