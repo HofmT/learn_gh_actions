@@ -4,6 +4,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: 20.16.0-bullseye
     services:
       postgres:
         image: postgres:16.1
