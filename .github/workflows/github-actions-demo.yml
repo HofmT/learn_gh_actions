@@ -15,6 +15,18 @@ jobs:
           POSTGRES_DB: plural_integration
         ports:
           - 5432:5432
+      neo4j:
+        image: neo4j:5.9.0-enterprise
+        env:
+          _JAVA_OPTIONS: -Xmx2g
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: 'yes'
+          NEO4J_AUTH: 'neo4j/plural_123'
+          NEO4J_dbms_connector_http_listen__address: ':7484'
+          NEO4J_dbms_connector_bolt_listen__address: ':7697'
+          NEO4J_PLUGINS: '["apoc"]'
+        ports:
+          - 7484:7484
+          - 7697:7697
       mongo:
         image: mongo:7.0.12
         ports:
@@ -27,10 +39,41 @@ jobs:
         image: rabbitmq:3.12.12-alpine
         ports:
           - 5672:5672
-        
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+        env:
+          xpack.security.enabled: false
+          http.port: 9250
+          http.cors.enabled: true
+          bootstrap.memory_lock: true
+          discovery.type: 'single-node'
+          ES_JAVA_OPTS: -Xms1024m -Xmx1024m
+          action.destructive_requires_name: false
+        ports:
+          - 9250:9250
+
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "The nodejs version is $(node -v)"
-      - run: echo "The postgres version is $(psql --version)"
+
+      - name: Check PostgreSQL service
+        run: |
+          pg_isready -h localhost -p 5432 -U plural
+      - name: Check Neo4j service
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:7484 || echo "Neo4j is not running"
+      - name: Check MongoDB service
+        run: |
+          nc -zv localhost 27017 || echo "MongoDB is not running"
+      - name: Check Redis service
+        run: |
+          nc -zv localhost 6379 || echo "Redis is not running"
+      - name: Check RabbitMQ service
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:15672 || echo "RabbitMQ is not running"
+      - name: Check Elasticsearch service
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:9250 || echo "Elasticsearch is not running"
+
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
