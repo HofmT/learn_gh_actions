@@ -15,7 +15,22 @@ jobs:
           POSTGRES_DB: plural_integration
         ports:
           - 5432:5432
+      mongo:
+        image: mongo:7.0.12
+        ports:
+          - 27017:27017
+      redis:
+        image: redis:5.0
+        ports:
+          - 6379:6379
+      rabbitmq:
+        image: rabbitmq:3.12.12-alpine
+        ports:
+          - 5672:5672
+        
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: "The nodejs version is $(node -v)"
+      - run: "The postgres version is $(psql --version)"
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
