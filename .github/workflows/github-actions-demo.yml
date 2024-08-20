@@ -31,6 +31,6 @@ jobs:
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "The nodejs version is $(node -v)"
-      - run: echo "The postgres version is $(psql --version)""
+      - run: echo "The postgres version is $(psql --version)"
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
