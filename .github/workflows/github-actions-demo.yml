@@ -1,6 +1,9 @@
 name: CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: 
+  push:
+    branches:
+      - test_gh_actions
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -55,22 +58,8 @@ jobs:
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "The nodejs version is $(node -v)"
-
-      - name: Check Neo4j service
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:7484 || echo "Neo4j is not running"
-      - name: Check MongoDB service
-        run: |
-          nc -zv localhost 27017 || echo "MongoDB is not running"
-      - name: Check Redis service
-        run: |
-          nc -zv localhost 6379 || echo "Redis is not running"
-      - name: Check RabbitMQ service
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:15672 || echo "RabbitMQ is not running"
-      - name: Check Elasticsearch service
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:9250 || echo "Elasticsearch is not running"
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
