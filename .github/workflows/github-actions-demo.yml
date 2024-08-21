@@ -65,6 +65,12 @@ jobs:
           curl -L https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz \
           | tar -C /usr/local/bin -xzv
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Check PostgreSQL service
         run: |
           dockerize -wait tcp://localhost:5432 -timeout 1m
