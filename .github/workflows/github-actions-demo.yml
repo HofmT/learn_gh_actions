@@ -68,8 +68,8 @@ jobs:
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - name: Pause for Debugging
+        run: sleep 1d
 
       - name: Check PostgreSQL service
         run: |
