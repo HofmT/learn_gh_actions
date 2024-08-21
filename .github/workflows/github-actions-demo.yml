@@ -16,8 +16,6 @@ jobs:
           POSTGRES_USER: plural
           POSTGRES_PASSWORD: "plural"
           POSTGRES_DB: plural_integration
-        ports:
-          - 5432:5432
       neo4j:
         image: neo4j:5.9.0-enterprise
         env:
@@ -27,21 +25,12 @@ jobs:
           NEO4J_dbms_connector_http_listen__address: ':7484'
           NEO4J_dbms_connector_bolt_listen__address: ':7697'
           NEO4J_PLUGINS: '["apoc"]'
-        ports:
-          - 7484:7484
-          - 7697:7697
       mongo:
         image: mongo:7.0.12
-        ports:
-          - 27017:27017
       redis:
         image: redis:5.0
-        ports:
-          - 6379:6379
       rabbitmq:
         image: rabbitmq:3.12.12-alpine
-        ports:
-          - 5672:5672
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
         env:
@@ -52,8 +41,6 @@ jobs:
           discovery.type: 'single-node'
           ES_JAVA_OPTS: -Xms1024m -Xmx1024m
           action.destructive_requires_name: false
-        ports:
-          - 9250:9250
 
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -65,35 +52,21 @@ jobs:
           curl -L https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz \
           | tar -C /usr/local/bin -xzv
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
-      - name: Pause for Debugging
-        run: sleep 1d
-
       - name: Check PostgreSQL service
         run: |
-          dockerize -wait tcp://localhost:5432 -timeout 1m
+          dockerize -wait tcp://postgres:5432 -timeout 1m
 
       - name: Check Neo4j service
         run: |
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:7484 || echo "Neo4j is not running"
+          dockerize -wait tcp://neo4j:7484 -timeout 1m
 
       - name: Check MongoDB service
         run: |
-          nc -zv localhost 27017 || echo "MongoDB is not running"
-
-      - name: Check Redis service
-        run: |
-          nc -zv localhost 6379 || echo "Redis is not running"
-
-      - name: Check RabbitMQ service
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:15672 || echo "RabbitMQ is not running"
+          dockerize -wait tcp://mongo:27017 -timeout 1m
 
       - name: Check Elasticsearch service
         run: |
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:9250 || echo "Elasticsearch is not running"
+          dockerize -wait tcp://elasticsearch:9250 -timeout 1m
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
