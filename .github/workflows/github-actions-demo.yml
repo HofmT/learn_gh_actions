@@ -60,6 +60,34 @@ jobs:
       - run: echo "The nodejs version is $(node -v)"
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Install Dockerize
+        run: |
+          curl -L https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz \
+          | tar -C /usr/local/bin -xzv
+
+      - name: Check PostgreSQL service
+        run: |
+          pg_isready -h localhost -p 5432 -U plural
+
+      - name: Check Neo4j service
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:7484 || echo "Neo4j is not running"
+
+      - name: Check MongoDB service
+        run: |
+          nc -zv localhost 27017 || echo "MongoDB is not running"
+
+      - name: Check Redis service
+        run: |
+          nc -zv localhost 6379 || echo "Redis is not running"
+
+      - name: Check RabbitMQ service
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:15672 || echo "RabbitMQ is not running"
+
+      - name: Check Elasticsearch service
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:9250 || echo "Elasticsearch is not running"
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
