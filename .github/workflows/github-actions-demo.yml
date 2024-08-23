@@ -64,6 +64,11 @@ jobs:
         with:
           node-version: 20.11
 
+      - name: Print Branch Information
+        run: |
+          echo "Branch or Tag: $GITHUB_REF"
+          echo "Branch Name: $GITHUB_REF_NAME"
+
       - name: Install Dockerize
         run: |
           curl -L https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz \
