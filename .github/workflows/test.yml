@@ -25,7 +25,7 @@ jobs:
         run: ssh -v -p ${{ secrets.PORT}} ec2-user@${{ secrets.HOST_IP }} "whoami"
     # Test running a seperate script
       - name: Run a script
-        run: ./.github/scripts/test.sh
+        run: ./test.sh
         env:
             PORT: ${{ secrets.PORT }}
             HOST_IP: ${{ secrets.HOST_IP }}
