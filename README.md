@@ -1,1 +1,1 @@
-# learn_gh_actions
+# Learn GH actions
