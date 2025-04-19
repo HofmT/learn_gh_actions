@@ -1,4 +1,6 @@
 print("Hello World")
 
-i = 1+2
-print("The sum of 1+2 is {}".format(i))
+oper1 = 1
+oper2 = 2
+i = oper1+oper2
+print("The sum of {}+{} is {}".format(oper1,oper2,i))
